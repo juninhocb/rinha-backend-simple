@@ -15,11 +15,17 @@ class PersonController(private val repository: PersonRepository,
     fun save(@RequestBody person: Person,
              ucb: UriComponentsBuilder) : ResponseEntity<Void> {
 
+        if (person.nome.length > 100 || person.apelido.length > 32) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build()
+        }
+
         val addedNickname = redisTemplate.opsForValue().get(person.apelido)
+
 
         if (addedNickname != null){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build()
         }
+
 
         val id = repository.save(person)
 
