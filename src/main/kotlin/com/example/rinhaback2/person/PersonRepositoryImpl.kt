@@ -30,7 +30,7 @@ class PersonRepositoryImpl(private val jdbcTemplate: JdbcTemplate,
                 ps.setString(1, person.nome)
                 ps.setString(2, person.apelido)
                 ps.setString(3, person.nascimento)
-                ps.setString(4, person.stack)
+                ps.setString(4, person.stack.toString())
                 ps
             },
             generatedKeys

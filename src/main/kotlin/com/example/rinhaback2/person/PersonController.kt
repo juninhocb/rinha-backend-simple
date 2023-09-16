@@ -3,10 +3,9 @@ package com.example.rinhaback2.person
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
+import java.util.*
 
 @RestController
 class PersonController(private val repository: PersonRepository,
@@ -39,6 +38,38 @@ class PersonController(private val repository: PersonRepository,
 
         return ResponseEntity.created(uri).build()
 
+    }
+
+    @GetMapping("/pessoas/{id}")
+    fun getById(@PathVariable id: String) : ResponseEntity<Person> {
+
+        val cachedPerson = redisTemplate.opsForValue().get(id)
+
+        if (cachedPerson != null){
+            println("returned by cache")
+            return ResponseEntity.ok().body(cachedPerson)
+        }
+
+        return ResponseEntity.ok().body(repository.findById(UUID.fromString(id)))
+    }
+
+    @GetMapping("/pessoas")
+    fun getByCriteria(@RequestParam("t") criteria: String) : ResponseEntity<List<Person>>{
+        return try {
+            ResponseEntity.ok().body(repository.findByCriteria(criteria))
+        } catch (ex: Exception){
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
+    }
+
+    @GetMapping("/contagem-pessoas")
+    fun getStoredPeople() : Long {
+        return repository.count();
+    }
+
+    @GetMapping("/err")
+    fun getErr() : ResponseEntity<MutableList<String>> {
+        return ResponseEntity.ok(PersonExceptionHandler.listErr)
     }
 
 

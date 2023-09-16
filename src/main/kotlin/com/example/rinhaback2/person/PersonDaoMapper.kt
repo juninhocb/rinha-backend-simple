@@ -12,7 +12,7 @@ class PersonDaoMapper : RowMapper<Person> {
             apelido = rs.getString("nickname"),
             nome = rs.getString("name"),
             nascimento = rs.getString("born_at"),
-            stack = rs.getString("stack")
+            stack = rs.getString("stack").split(",")
         )
     }
 
