@@ -15,7 +15,9 @@ class PersonController(private val repository: PersonRepository,
     fun save(@RequestBody person: Person,
              ucb: UriComponentsBuilder) : ResponseEntity<Void> {
 
-        if (person.nome.length > 100 || person.apelido.length > 32) {
+        if (person.nome.length > 100
+            || person.apelido.length > 32
+            || !person.nascimento.matches("\\d{4}-\\d{2}-\\d{2}".toRegex())) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build()
         }
 
