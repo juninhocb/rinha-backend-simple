@@ -54,7 +54,6 @@ class PersonController(private val repository: PersonRepository,
         val cachedPerson = redisTemplate.opsForValue().get(id)
 
         if (cachedPerson != null){
-            println("returned by cache")
             return ResponseEntity.ok().body(cachedPerson)
         }
 
@@ -73,11 +72,6 @@ class PersonController(private val repository: PersonRepository,
     @GetMapping("/contagem-pessoas")
     fun getStoredPeople() : Long {
         return repository.count();
-    }
-
-    @GetMapping("/err")
-    fun getErr() : ResponseEntity<MutableList<String>> {
-        return ResponseEntity.ok(PersonExceptionHandler.listErr)
     }
 
 
